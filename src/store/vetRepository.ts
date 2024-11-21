@@ -33,28 +33,3 @@ export function getVets(): Veterinarian[] {
 export function getVetById(id: number): Veterinarian | undefined {
   return VetRepository[id];
 }
-
-/**
- * Adds a veterinarian to the VetRepository.
- *
- * @param vet - The veterinarian to add.
- * @returns The added veterinarian.
- */
-export function addVet(vet: Veterinarian): Veterinarian {
-  VetRepository[vet.id] = vet;
-  return vet;
-}
-
-/**
- * Updates the information of an existing veterinarian in the VetRepository.
- *
- * @param vet - The veterinarian object containing updated information.
- * @returns The updated veterinarian object if the update was successful, or `undefined` if the veterinarian does not exist in the repository.
- */
-export function updateVet(vet: Veterinarian): Veterinarian | undefined {
-  if (VetRepository[vet.id]) {
-    VetRepository[vet.id] = vet;
-    return vet;
-  }
-  return undefined;
-}
