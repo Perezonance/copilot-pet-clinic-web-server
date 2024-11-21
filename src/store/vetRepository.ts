@@ -33,3 +33,18 @@ export function getVets(): Veterinarian[] {
 export function getVetById(id: number): Veterinarian | undefined {
   return VetRepository[id];
 }
+
+//Implement a function to add a Valid vet into the VetRepository
+/**
+ * Adds a veterinarian to the VetRepository.
+ *
+ * @param vet - The veterinarian to add.
+ * @returns The added veterinarian.
+ */
+
+export function addVet(vet: Veterinarian): Veterinarian {
+  const id = vet.id || Math.floor(Math.random() * 100000);
+  const newVet = { ...vet, id };
+  VetRepository[id] = newVet;
+  return newVet;
+}
