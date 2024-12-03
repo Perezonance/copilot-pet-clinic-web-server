@@ -3,6 +3,7 @@ import {
   getAllAppointments,
   getAllAppointmentsByStatus,
   createAppointment,
+  updateAppointment,
 } from "./appointments";
 
 export {
@@ -10,4 +11,5 @@ export {
   getAllAppointments,
   getAllAppointmentsByStatus,
   createAppointment,
+  updateAppointment,
 };

@@ -3,6 +3,7 @@ import {
   getAppointmentsHandler,
   createAppointmentHandler,
   getAppointmentByIdHandler,
+  updateAppointmentHandler, // Import the update handler
 } from "../../handlers/appointments";
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 
@@ -24,7 +25,7 @@ const appointmentFormBodySchema = {
     reason: { type: "string" },
     notes: { type: "string" },
   },
-  required: ["petId", "vetId", "ownerId", "date", "reason"],
+  required: [],
 };
 
 const getAppointmentsSchema: FastifySchema = {
@@ -44,6 +45,20 @@ const createAppointmentSchema: FastifySchema = {
   body: appointmentFormBodySchema,
 };
 
+/**
+ * Schema for updating an appointment.
+ *
+ * This schema validates the parameters and body of the request
+ * to ensure they conform to the expected structure.
+ *
+ * - `params`: Validates the path parameters using `appointmentPathParamSchema`.
+ * - `body`: Validates the request body using `appointmentFormBodySchema`.
+ */
+const updateAppointmentSchema: FastifySchema = {
+  params: appointmentPathParamSchema,
+  body: appointmentFormBodySchema,
+};
+
 export default (
   fastify: FastifyInstance,
   _opts: FastifyPluginOptions,
@@ -57,7 +72,7 @@ export default (
     getAppointmentsHandler
   );
 
-  //ex: GET http://localhost:3000/appointments/40001
+  //ex: GET http://localhost:3000/appointments/:appointmentId
   fastify.get(
     "/appointments/:appointmentId",
     { schema: getAppointmentByIdSchema },
@@ -70,5 +85,13 @@ export default (
     { schema: createAppointmentSchema },
     createAppointmentHandler
   );
+
+  //ex: PUT http://localhost:3000/appointments/:appointmentId
+  fastify.put(
+    "/appointments/:appointmentId",
+    { schema: updateAppointmentSchema }, // Add schema for update
+    updateAppointmentHandler
+  );
+
   done();
 };

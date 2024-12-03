@@ -67,3 +67,31 @@ export async function createAppointment(
 
   return newAppointment;
 }
+
+/**
+ * Updates an existing appointment with the given appointment form data.
+ *
+ * @param appointmentId - The ID of the appointment to update.
+ * @param appointment - The updated form data for the appointment.
+ * @returns A promise that resolves to the updated appointment if found, otherwise undefined.
+ */
+export async function updateAppointment(
+  appointmentId: number,
+  appointment: Partial<AppointmentForm>
+): Promise<Appointment | undefined> {
+  const existingAppointment = database[appointmentId];
+
+  if (existingAppointment) {
+    const updatedAppointment: Appointment = {
+      ...existingAppointment,
+      ...appointment,
+      updatedAt: new Date().toISOString(),
+    };
+
+    database[appointmentId] = updatedAppointment;
+
+    return updatedAppointment;
+  }
+
+  return undefined;
+}

@@ -114,6 +114,43 @@ export async function createAppointmentHandler(
   return reply.status(201).send(appointment);
 }
 
+/**
+ * Handler to update an existing appointment.
+ *
+ * @param request - The Fastify request object containing the appointment ID in the params and the updated data in the body.
+ * @param reply - The Fastify reply object used to send the response.
+ *
+ * @remarks
+ * This handler updates an existing appointment with the provided data. If the appointment is successfully updated, it responds with a 200 status code and the updated appointment data.
+ * If the appointment update fails, it responds with a 500 status code.
+ */
+export async function updateAppointmentHandler(
+  request: FastifyRequest<{
+    Params: AppointmentIdPathParam;
+    Body: Partial<AppointmentForm>;
+  }>,
+  reply: FastifyReply
+) {
+  const appointmentId: number = request.params.appointmentId;
+  const updatedData: Partial<AppointmentForm> = request.body;
+  let updatedAppointment: Appointment;
+
+  try {
+    const result = await AppointmentsDB.updateAppointment(
+      appointmentId,
+      updatedData
+    );
+    if (!result) {
+      return reply.status(404).send("Appointment not found");
+    }
+    updatedAppointment = result;
+  } catch (error) {
+    return reply.status(500).send("Internal Server Error");
+  }
+
+  return reply.status(200).send(updatedAppointment);
+}
+
 function validateStatus(status: string): boolean {
   return Object.values(AppointmentStatus).includes(status as AppointmentStatus);
 }
