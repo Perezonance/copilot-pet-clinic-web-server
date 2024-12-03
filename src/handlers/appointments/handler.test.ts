@@ -234,5 +234,83 @@ describe("Appointments Handlers", () => {
         expect(AppointmentsDB.createAppointment).toHaveBeenCalledTimes(1);
       });
     });
+    describe("updateAppointmentHandler()", () => {
+      describe("golden path cases", () => {
+        it("should return a 200 status code and the updated appointment", async () => {
+          const appointmentId = 40001;
+          const updatedData = {
+            date: "2021-12-02T12:00:00.000Z",
+            reason: "Updated reason",
+          };
+
+          const updatedAppointment = {
+            ...mockDB[appointmentId],
+            ...updatedData,
+          };
+
+          (AppointmentsDB.updateAppointment as jest.Mock).mockResolvedValueOnce(
+            updatedAppointment
+          );
+
+          const { statusCode, payload } = await fastify.inject({
+            method: "PUT",
+            url: `/appointments/${appointmentId}`,
+            payload: updatedData,
+          });
+
+          // Assert
+          expect(statusCode).toBe(200);
+          expect(JSON.parse(payload)).toEqual(updatedAppointment);
+        });
+      });
+
+      describe("error cases", () => {
+        it("should return a 404 status code when the appointment is not found", async () => {
+          const appointmentId = 99999;
+          const updatedData = {
+            date: "2021-12-02T12:00:00.000Z",
+            reason: "Updated reason",
+          };
+
+          (AppointmentsDB.updateAppointment as jest.Mock).mockResolvedValueOnce(
+            null
+          );
+
+          const { statusCode } = await fastify.inject({
+            method: "PUT",
+            url: `/appointments/${appointmentId}`,
+            payload: updatedData,
+          });
+
+          // Assert
+          expect(statusCode).toBe(404);
+          expect(AppointmentsDB.updateAppointment).toHaveBeenCalledTimes(1);
+        });
+
+        it("should return a 500 status code when the DB call fails", async () => {
+          const appointmentId = 40001;
+          const updatedData = {
+            date: "2021-12-02T12:00:00.000Z",
+            reason: "Updated reason",
+          };
+
+          (
+            AppointmentsDB.updateAppointment as jest.Mock
+          ).mockImplementationOnce(() => {
+            throw new Error("DB Failure");
+          });
+
+          const { statusCode } = await fastify.inject({
+            method: "PUT",
+            url: `/appointments/${appointmentId}`,
+            payload: updatedData,
+          });
+
+          // Assert
+          expect(statusCode).toBe(500);
+          expect(AppointmentsDB.updateAppointment).toHaveBeenCalledTimes(1);
+        });
+      });
+    });
   });
 });
