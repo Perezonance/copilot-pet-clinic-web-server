@@ -2,11 +2,8 @@ import { FastifySchema } from "fastify";
 import {
   getAppointmentsHandler,
   createAppointmentHandler,
-  updateAppointmentHandler,
   getAppointmentByIdHandler,
-  updateAppointmentStatusHandler,
 } from "../../handlers/appointments";
-import { Headers } from "../../handlers/appointments/types";
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 
 const appointmentPathParamSchema = {
@@ -47,29 +44,6 @@ const createAppointmentSchema: FastifySchema = {
   body: appointmentFormBodySchema,
 };
 
-const updateAppointmentSchema: FastifySchema = {
-  body: appointmentFormBodySchema,
-  params: appointmentPathParamSchema,
-};
-
-const patchAppointmentStatusSchema: FastifySchema = {
-  body: {
-    type: "object",
-    properties: {
-      status: { type: "string" },
-    },
-    required: ["status"],
-  },
-  headers: {
-    type: "object",
-    properties: {
-      [Headers.AuthId]: { type: "string" },
-    },
-    required: [Headers.AuthId],
-  },
-  params: appointmentPathParamSchema,
-};
-
 export default (
   fastify: FastifyInstance,
   _opts: FastifyPluginOptions,
@@ -95,20 +69,6 @@ export default (
     "/appointments",
     { schema: createAppointmentSchema },
     createAppointmentHandler
-  );
-
-  //ex: PUT http://localhost:3000/appointments/40001
-  fastify.put(
-    "/appointments/:appointmentId",
-    { schema: updateAppointmentSchema },
-    updateAppointmentHandler
-  );
-
-  //ex: PATCH http://localhost:3000/appointments/40001/status
-  fastify.patch(
-    "/appointments/:appointmentId/status",
-    { schema: patchAppointmentStatusSchema },
-    updateAppointmentStatusHandler
   );
   done();
 };
