@@ -1,5 +1,4 @@
-import vetRouter from "./vets/index.js";
-import petRouter from "./pets/index.js";
-import ownerRouter from "./owners/index.js";
+import apptsRouter from "./appointments";
+import petsRouter from "./pets";
 
-export default [vetRouter, petRouter, ownerRouter];
+export default [apptsRouter, petsRouter];
